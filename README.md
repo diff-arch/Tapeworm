@@ -12,6 +12,7 @@ Tapeworm currently allows you to create videos from image sequences and *vis ver
 
 Tapeworm uses the free and open source FFmpeg project - a cross-platform command-line-based program for transcoding multimedia files -, and offers some of its functionality to Grasshopper users. For various reasons, we decided not to include a build of FFmpeg in the current Tapeworm release, which means that you have to install it yourself (if you don't already have it).
 
+[![](resources/TapewormVideo_Thumbnail.png)](https://www.youtube.com/watch?v=FfgvohowRhw)
 
 # Table of Contents
 <!--ts-->
