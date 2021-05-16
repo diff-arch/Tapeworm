@@ -5,7 +5,7 @@ https://www.github.com/diff-arch/Tapeworm
 https://www.food4rhino.com/app/tapeworm
 @license GPL-3.0 <https://www.gnu.org/licenses/gpl.html>
 
-@version 1.0.0
+@version 1.0.1
 
 ImageSequence
 """
@@ -18,8 +18,8 @@ from utils import (is_file, split_at_digit, levenshtein_distance,
                    parse_digit_format_specifier, fetch_dir,
                    extract_digit_format_specifiers, to_re_pattern)
 
+__version__ = "0.7.6 (2021-05-14)"
 
-__version__ = "0.7.5 (2021-03-06)"
 
 # ------------------------------------------------------------------------------
 
@@ -118,7 +118,8 @@ class ImageSequence:
         predicted = []  # indices of predicted sequence body components
 
         for i in xrange(len(body)):
-            ln = len(body[i])  # string length of body component
+            cln = len(body[i])  # string length of body component
+            bln = sum([len(c) for c in body])  # total body string length
             total_dist = 0  # total Levenshtein distance
             count = 0  # number of checked files
 
@@ -129,8 +130,22 @@ class ImageSequence:
                 if is_file(fpath, self.ext.strip(".").upper())[0] \
                         and f != self.filename:
                     froot, fext = os.path.splitext(f)
+                    # Get the string length difference between the corresponding
+                    # froot string length and the total body string length
+                    ld = len(froot) - bln
+                    # Get the froot segment to compare to the body component
+                    froot_seg = froot[si:si + cln]
+                    # Calculate the character offset between the body component and
+                    # the possibly longer froot segment (of a non-zero padded sequence)
+                    char_offset = (cln + ld) - cln
+                    if char_offset > 0:  # len(froot_seg) > len(body[i])
+                        for j in range(char_offset):
+                            idx = si + cln + j
+                            if not froot[idx].isdigit():
+                                break
+                            froot_seg += froot[idx]  # add digits only
                     # Compute the Levenshtein distance
-                    dist = levenshtein_distance(froot[si:si + ln], body[i])
+                    dist = levenshtein_distance(froot_seg, body[i])
                     total_dist += dist
                 count += 1
 
@@ -144,13 +159,12 @@ class ImageSequence:
             if total_dist > 0 and body[i].isdigit():
                 predicted.append(i)
             # Increment si to the start index of the next body component
-            si += ln
+            si += cln
 
         # if len(predicted) < 1 or len(predicted) >= len(body):
         if len(predicted) < 1 or len(predicted) > len(body):
             raise RuntimeError("Unable to predict number sequence for '{}'"
                                .format(self.filename))
-
         return predicted
 
     def _get_body(self):
@@ -272,7 +286,7 @@ class ImageSequence:
             return self.dfs_filename
         elif isinstance(dfs, list):  # multiple dfs; currently unsupported
             raise ValueError("More than one digit format specifier found")
-        group_pattern = "({})".format(to_re_pattern(dfs)) #
+        group_pattern = "({})".format(to_re_pattern(dfs))
         re_filename = r"^" + self.dfs_filename.replace(dfs, group_pattern) + "$"
         if "%%" in re_filename:  # fix for filenames with escaped %-symbols
             re_filename = re_filename.replace("%%", "%")
@@ -313,3 +327,4 @@ class ImageSequence:
             files = [f for _, f in sorted(zip(seq_nums, files))]
 
         return files
+
