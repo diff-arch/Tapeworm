@@ -18,6 +18,7 @@ Tapeworm uses the free and open source FFmpeg project - a cross-platform command
 <!--ts-->
    * [License](#License)
    * [Tapeworm Installation](#Tapeworm-Installation)
+   * [Updating Tapeworm](#Updating-Tapeworm)
    * [FFmpeg Installation](#FFmpeg-Installation)
        * [Install FFmpeg on Windows](#Install-FFmpeg-on-Windows)
        * [Install FFmpeg on macOS](#Install-FFmpeg-on-macOS)
@@ -53,10 +54,16 @@ You should have received a copy of the GNU General Public License along with Tap
 
 **Note:** Rhino 5 users additionnally need to install the [GHPython plugin](https://www.food4rhino.com/app/ghpython) for Grasshopper.
 
-# FFmpeg Installation
-You only need to install FFmpeg, if it isn't already installed on your computer!
+# Updating Tapeworm
+1. Remove the previous Tapeworm installation by:
+    - deleting the folder named **Tapeworm** from the Grasshopper *Libraries* folder 
+    - deleting the folder named **Tapeworm_UserObjects** from the Grasshopper *UserObjects* folder
+2. Follow steps 1 through 5 from [Tapeworm Installation](#Tapeworm-Installation) above.
 
-Tapeworm should automatically detect existing FFmpeg installations.
+# FFmpeg Installation
+📌 You only need to install FFmpeg, if it isn't already installed on your computer!
+
+📌 The **Tapeworm** <kbd>FFmpeg Remote</kbd> component will try to automatically locate your FFmpeg installation the first time you place it on the Grasshopper canvas! **On Windows, the FFmpeg executable can by default only be located on the `C:/` drive!** If you prefer to keep it on another drive, you need to manually change the `WIN_SEARCH_PATH` variable in **Tapeworm/config.py**!
 
 ## Install FFmpeg on Windows
 <details>
@@ -77,7 +84,7 @@ Tapeworm should automatically detect existing FFmpeg installations.
 7. Move the extracted folder (whatever its name) to your `C:/` drive
 ![](resources/InstallFFmpeg_Windows_04.PNG)
 
-8. Voilà !
+8. Et voilà! 
 </details>
 
 ## Install FFmpeg on macOS
@@ -120,7 +127,6 @@ Tapeworm should automatically detect existing FFmpeg installations.
 
 10. And you're done!
 
-
 #### Installation with Homebrew
 You obviously need to have the [Homebrew](https://brew.sh/) package manager installed for this to work.
 
@@ -137,5 +143,7 @@ Some organizational and structural parts of the code are based on Andrea Rossi's
 
 # Useful Links
 [FFmpeg](https://ffmpeg.org/)
+
+[diff-arch](https://diff-arch.xyz/)
 
 [Antoine Maes](https://www.antoinemaes.com/)
