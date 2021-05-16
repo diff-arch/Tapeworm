@@ -5,7 +5,7 @@ https://www.github.com/diff-arch/Tapeworm
 https://www.food4rhino.com/app/tapeworm
 @license GPL-3.0 <https://www.gnu.org/licenses/gpl.html>
 
-@version 1.0.0
+@version 1.0.1
 
 Utilities
 """
@@ -773,7 +773,3 @@ def update_config(fpath, key, value):
         return False, "Could not to write to '{}'".format(fname)
 
     return True, None
-
-
-if __name__ == "__main__":
-    print(strip_digit_format_specifier("%03d.", False, ["."]))
