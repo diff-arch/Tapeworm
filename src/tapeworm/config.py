@@ -5,7 +5,7 @@ https://www.github.com/diff-arch/Tapeworm
 https://www.food4rhino.com/app/tapeworm
 @license GPL-3.0 <https://www.gnu.org/licenses/gpl.html>
 
-@version 1.0.0
+@version 1.0.1
 
 Configuration
 """
@@ -17,7 +17,7 @@ __version__ = "0.0.6 (2021-03-06)"
 MAC_SEARCH_PATH = "/"  # macOS
 WIN_SEARCH_PATH = "C:/"  # Windows
 
-FFMPEG_PATH = ""  # absolute path of the FFmpeg executable
+FFMPEG_PATH = "/usr/local/bin/ffmpeg"  # absolute path of the FFmpeg executable
 
 # IMG_FORMATS, VID_FORMATS, and SPECIAL_CHARS might break parts of the code if changed
 # Supported file formats
