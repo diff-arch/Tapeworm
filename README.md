@@ -18,7 +18,14 @@ Tapeworm uses the free and open source FFmpeg project - a cross-platform command
 <!--ts-->
    * [License](#License)
    * [Tapeworm Installation](#Tapeworm-Installation)
-   * [Updating Tapeworm](#Updating-Tapeworm)
+       * [PackageManager Installation](#PackageManager-Installation)
+       * [Manual Installation](#Manual-Installation)
+   * [Tapeworm Update](#Tapeworm-Update)
+       * [PackageManager Update](#PackageManager-Update)
+       * [Manual Update](#Manual-Update)
+   * [Tapeworm Uninstall](#Tapeworm-Uninstall)
+       * [PackageManager Uninstall](#PackageManager-Uninstall)
+       * [Manual Uninstall](#Manual-Uninstall)
    * [FFmpeg Installation](#FFmpeg-Installation)
        * [Install FFmpeg on Windows](#Install-FFmpeg-on-Windows)
        * [Install FFmpeg on macOS](#Install-FFmpeg-on-macOS)
@@ -42,6 +49,17 @@ You should have received a copy of the GNU General Public License along with Tap
 
 
 # Tapeworm Installation
+📌 Tapeworm is now available in the **Rhino PackageManager**! If you wish to install it **manually**, follow the [Manual Installation](#Manual-Installation) instructions below.
+
+📌 **Both installation methods require you to download and install FFmpeg yourself.** You can find an [install guide](#FFmpeg-Installation) further bellow.
+
+## PackageManager Installation
+1. Remove any previous manual Tapeworm installation first, by following both steps from the [Manual Uninstall](#Manual-Uninstall) guide below.
+2. In Rhino 7, enter the command `PackageManager`, or `TestPackageManager` for Rhino 6. Rhino 5 users need to install Tapeworm manually!
+3. In the PackageManager window, search for *"tapeworm"*, and install it.
+5. Relaunch Rhino.
+
+## Manual Installation
 1. Download the latest Tapeworm release from [Food4Rhino](https://www.food4rhino.com/app/tapeworm) or [GitHub](https://github.com/diff-arch/Tapeworm/releases).
 2. Unzip the downloaded file (your internet browser might already have done this for you).
 3. Inside the extracted folder, you will - find amongst other files - a folder called *Tapeworm*, and a folder named *Tapeworm_UserObjects*:
@@ -54,11 +72,32 @@ You should have received a copy of the GNU General Public License along with Tap
 
 **Note:** Rhino 5 users additionnally need to install the [GHPython plugin](https://www.food4rhino.com/app/ghpython) for Grasshopper.
 
-# Updating Tapeworm
-1. Remove the previous Tapeworm installation by:
-    - deleting the folder named **Tapeworm** from the Grasshopper *Libraries* folder 
-    - deleting the folder named **Tapeworm_UserObjects** from the Grasshopper *UserObjects* folder
-2. Follow steps 1 through 5 from [Tapeworm Installation](#Tapeworm-Installation) above.
+# Tapeworm Update
+📌 PackageManager installations also get updated in the PackageManager! 
+
+## PackageManager Update
+1. In Rhino 7, run the command `PackageManager`, or `TestPackageManager` for Rhino 6. Rhino 5 users need to update Tapeworm manually!
+2. In the PackageManager under the *Installed* tab, look for your Tapeworm installation, and update it (if a newer version is available).
+3. Relaunch Rhino.
+
+## Manual Update
+1. Remove any previous manual Tapeworm installation, by following the [Manual Uninstall](#Manual-Uninstall) guide.
+3. Follow steps 1 through 5 from [Manual Installation](#Manual-Installation) above to install the new version.
+4. Relaunch Rhino.
+
+# Tapeworm Uninstall
+📌 PackageManager installations also get uninstalled in the PackageManager! 
+
+## PackageManager Uninstall
+1. In Rhino 7, run the command `PackageManager`, or `TestPackageManager` for Rhino 6. Rhino 5 users need to uninstall Tapeworm manually!
+2. In the PackageManager under the *Installed* tab, look for your Tapeworm installation, and uninstall it.
+3. Relaunch Rhino.
+
+## Manual Uninstall
+1. Delete the folder named **Tapeworm** from the Grasshopper *Libraries* folder 
+2. Deleting the folder named **Tapeworm_UserObjects** from the Grasshopper *UserObjects* folder
+3. Relaunch Rhino.
+
 
 # FFmpeg Installation
 📌 You only need to install FFmpeg, if it isn't already installed on your computer!
@@ -68,7 +107,7 @@ You should have received a copy of the GNU General Public License along with Tap
 ## Install FFmpeg on Windows
 <details>
   <summary>Click to expand!</summary>
-    
+  
 1. Go to [ffmpeg.org](https://ffmpeg.org) and select **Download** from the left navigation
 ![](resources/InstallFFmpeg_Windows_00.png)
 
