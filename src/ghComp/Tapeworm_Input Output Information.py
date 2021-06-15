@@ -40,36 +40,46 @@ ghenv.Component.IconDisplayMode = ghenv.Component.IconDisplayMode.application
 ghenv.Component.Category = "Tapeworm"
 ghenv.Component.SubCategory = "1 | I/O"
 
-__version__ = "0.3.2 (2021-03-06)"
+__version__ = "0.3.3 (2021-06-05)"
 
 # ------------------------------ COMPONENT CODE --------------------------------
 
 import sys
 import os
+
 import Grasshopper as gh
+import Rhino as rh
 
 
-# Add the Tapeworm installation directory to sys.path, if necessary
-GH_COMPONENTS_FOLDER = gh.Folders.DefaultAssemblyFolder
-if GH_COMPONENTS_FOLDER not in sys.path:
-    sys.path.append(GH_COMPONENTS_FOLDER)
-# Try to import from Tapeworm
-loaded = False
-try:
-    from Tapeworm import __version__
+if "Tapeworm" not in sys.modules:
+    plugin_path = gh.Folders.DefaultAssemblyFolder
+    if plugin_path not in sys.path:
+        sys.path.append(plugin_path)
 
-    loaded = True
-except ImportError:
-    err = "No module named 'Tapeworm'. Is the same-titled folder " \
-          + "available in '{}' ?".format(GH_COMPONENTS_FOLDER)
-    ghenv.Component.AddRuntimeMessage(
-        gh.Kernel.GH_RuntimeMessageLevel.Error, err
-    )
+    try:
+        from Tapeworm import __version__
+    except ImportError:
+        sys.path.remove(plugin_path)
+
+        # Recurse the auto-install plug-in folders and
+        # get directories with "active" versions of plug-ins
+        avd = rh.Runtime.HostUtils.GetActivePlugInVersionFolders(True)
+        # Return the Tapeworm installation directory, or None
+        find_path = lambda: next((a.FullName for a in avd
+                                  if a.FullName.find("Tapeworm") != -1), None)
+        plugin_path = find_path()
+        if plugin_path not in sys.path:
+            sys.path.append(plugin_path)
+
+        try:
+            from Tapeworm import __version__
+        except ImportError as e:
+            raise e
+
 
 # If Tapeworm is available, import the required classes and functions
-if loaded:
-    from Tapeworm import (InputOutput, ImageSequence, on_windows,
-                          IMG_FORMATS, VID_FORMATS)
+from Tapeworm import (InputOutput, ImageSequence, on_windows,
+                      IMG_FORMATS, VID_FORMATS)
 
 
 # Generally supported file formats
@@ -195,5 +205,4 @@ def main(in_path, out_fname, out_dir):
 
 
 if __name__ == "__main__":
-    if loaded:
-        IO = main(SourcePath, TargetFilename, TargetFolder)
+    IO = main(SourcePath, TargetFilename, TargetFolder)
