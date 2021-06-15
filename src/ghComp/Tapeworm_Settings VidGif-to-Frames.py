@@ -45,35 +45,45 @@ ghenv.Component.IconDisplayMode = ghenv.Component.IconDisplayMode.application
 ghenv.Component.Category = "Tapeworm"
 ghenv.Component.SubCategory = "2 | Settings"
 
-__version__ = "0.2.6 (2021-03-06)"
+__version__ = "0.2.7 (2021-06-05)"
 
 # ------------------------------ COMPONENT CODE --------------------------------
 
 import sys
 
 import Grasshopper as gh
+import Rhino as rh
 
 
-# Add the Tapeworm installation directory to sys.path, if necessary
-GH_COMPONENTS_FOLDER = gh.Folders.DefaultAssemblyFolder
-if GH_COMPONENTS_FOLDER not in sys.path:
-    sys.path.append(GH_COMPONENTS_FOLDER)
-# Try to import from Tapeworm
-loaded = False
-try:
-    from Tapeworm import __version__
-    loaded = True
-except ImportError:
-    err = "No module named 'Tapeworm'. Is the same-titled folder " \
-          + "available in '{}' ?".format(GH_COMPONENTS_FOLDER)
-    ghenv.Component.AddRuntimeMessage(
-        gh.Kernel.GH_RuntimeMessageLevel.Error, err
-    )
+if "Tapeworm" not in sys.modules:
+    plugin_path = gh.Folders.DefaultAssemblyFolder
+    if plugin_path not in sys.path:
+        sys.path.append(plugin_path)
+
+    try:
+        from Tapeworm import __version__
+    except ImportError:
+        sys.path.remove(plugin_path)
+
+        # Recurse the auto-install plug-in folders and
+        # get directories with "active" versions of plug-ins
+        avd = rh.Runtime.HostUtils.GetActivePlugInVersionFolders(True)
+        # Return the Tapeworm installation directory, or None
+        find_path = lambda: next((a.FullName for a in avd
+                                  if a.FullName.find("Tapeworm") != -1), None)
+        plugin_path = find_path()
+        if plugin_path not in sys.path:
+            sys.path.append(plugin_path)
+
+        try:
+            from Tapeworm import __version__
+        except ImportError as e:
+            raise e
+
 
 # If Tapeworm is available, import the required classes and functions
-if loaded:
-    from Tapeworm import (InputOutput, SettingsVidGIFToFrames, is_integer_num,
-                          is_num, VID_FORMATS, IMG_FORMATS)
+from Tapeworm import (InputOutput, SettingsVidGIFToFrames, is_integer_num,
+                      is_num, VID_FORMATS, IMG_FORMATS)
 
 
 SUPP_OUT_FORMATS = list(IMG_FORMATS)
@@ -222,5 +232,4 @@ def main(io, image_format, start_frame, padding, framerate, sub_dirname):
 
 
 if __name__ == "__main__":
-    if loaded:
-        Settings = main(IO, Format, StartFrame, Padding, Framerate, None)
+    Settings = main(IO, Format, StartFrame, Padding, Framerate, None)
