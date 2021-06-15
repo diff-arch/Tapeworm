@@ -1,4 +1,3 @@
-
 # Tapeworm: FFmpeg Controller Grasshopper plug-in (GPL)
 # initiated by Marc Differding and Antoine Maes
 #
@@ -37,7 +36,7 @@ ghenv.Component.IconDisplayMode = ghenv.Component.IconDisplayMode.application
 ghenv.Component.Category = "Tapeworm"
 ghenv.Component.SubCategory = "3 | Run"
 
-__version__ = "0.2.9 (2021-03-06)"
+__version__ = "0.3.0 (2021-06-05)"
 
 # ------------------------------ COMPONENT CODE --------------------------------
 
@@ -46,36 +45,46 @@ import os
 import re
 
 import Grasshopper as gh
+import Rhino as rh
 
-# Add the Tapeworm installation directory to sys.path, if necessary
-GH_COMPONENTS_FOLDER = gh.Folders.DefaultAssemblyFolder
-if GH_COMPONENTS_FOLDER not in sys.path:
-    sys.path.append(GH_COMPONENTS_FOLDER)
-# Try to import from Tapeworm
-loaded = False
-try:
-    from Tapeworm import __version__
-    loaded = True
-except ImportError:
-    err = "No module named 'Tapeworm'. Is the same-titled folder " \
-          + "available in '{}' ?".format(GH_COMPONENTS_FOLDER)
-    ghenv.Component.AddRuntimeMessage(
-        gh.Kernel.GH_RuntimeMessageLevel.Error, err
-    )
+
+if "Tapeworm" not in sys.modules:
+    plugin_path = gh.Folders.DefaultAssemblyFolder
+    if plugin_path not in sys.path:
+        sys.path.append(plugin_path)
+
+    try:
+        from Tapeworm import __version__
+    except ImportError:
+        sys.path.remove(plugin_path)
+
+        # Recurse the auto-install plug-in folders and
+        # get directories with "active" versions of plug-ins
+        avd = rh.Runtime.HostUtils.GetActivePlugInVersionFolders(True)
+        # Return the Tapeworm installation directory, or None
+        find_path = lambda: next((a.FullName for a in avd
+                                  if a.FullName.find("Tapeworm") != -1), None)
+        plugin_path = find_path()
+        if plugin_path not in sys.path:
+            sys.path.append(plugin_path)
+
+        try:
+            from Tapeworm import __version__
+        except ImportError as e:
+            raise e
+
 
 # If Tapeworm is available, import the required classes and functions
-if loaded:
-    from Tapeworm import (ParentSettings, is_bool, detect_tool, invoke_tool,
-                          delete, on_windows, has_digit_format_specifier,
-                          is_blank, is_executable, update_config, read_config,
-                          MAC_SEARCH_PATH, WIN_SEARCH_PATH)
+from Tapeworm import (ParentSettings, is_bool, detect_tool, invoke_tool,
+                      delete, on_windows, has_digit_format_specifier,
+                      is_blank, is_executable, update_config, read_config,
+                      MAC_SEARCH_PATH, WIN_SEARCH_PATH)
 
 
-CONFIG_PATH = os.path.join(GH_COMPONENTS_FOLDER, "Tapeworm/config.py")
+CONFIG_PATH = os.path.join(os.path.dirname(sys.modules["Tapeworm"].__path__[0]), "Tapeworm/config.py")
 
 
 def main(tool_path, settings, overwrite, send):
-
     def call_back(x):
         """Clear the data inside this component and all output parameters."""
         ghenv.Component.ClearData()
@@ -116,7 +125,7 @@ def main(tool_path, settings, overwrite, send):
             )
             return
 
-        gh_doc = ghenv.Component.OnPingDocument() # get the Grasshopper document
+        gh_doc = ghenv.Component.OnPingDocument()  # get the Grasshopper document
         # Schedule this component to expire
         gh_doc.ScheduleSolution(1,
                                 gh.Kernel.GH_Document.GH_ScheduleDelegate(call_back))
@@ -282,14 +291,13 @@ def main(tool_path, settings, overwrite, send):
 
 
 if __name__ == "__main__":
-    if loaded:
-        # Get the FFMPEG_PATH from config.py
-        ffmpeg_path, msg = read_config(CONFIG_PATH, "FFMPEG_PATH")
-        if msg is not None:
-            e = "Unable to get FFMPEG_PATH from 'config.py': "
-            e += msg
-            ghenv.Component.AddRuntimeMessage(
-                gh.Kernel.GH_RuntimeMessageLevel.Error, e
-            )
+    # Get the FFMPEG_PATH from config.py
+    ffmpeg_path, msg = read_config(CONFIG_PATH, "FFMPEG_PATH")
+    if msg is not None:
+        e = "Unable to get FFMPEG_PATH from 'config.py': "
+        e += msg
+        ghenv.Component.AddRuntimeMessage(
+            gh.Kernel.GH_RuntimeMessageLevel.Error, e
+        )
 
-        main(ffmpeg_path, Settings, Overwrite, Send)
+    main(ffmpeg_path, Settings, Overwrite, Send)
